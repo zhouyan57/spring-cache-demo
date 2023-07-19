@@ -4,6 +4,7 @@ import com.itheima.entity.User;
 import com.itheima.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,15 @@ public class UserController {
         return user;
     }
 
+
     @DeleteMapping
+    @CacheEvict(cacheNames = "userCache",key = "#id") // key的生成：userCache::10
     public void deleteById(Long id){
         userMapper.deleteById(id);
     }
 
 	@DeleteMapping("/delAll")
+    @CacheEvict(cacheNames = "userCache",allEntries = true)
     public void deleteAll(){
         userMapper.deleteAll();
     }
